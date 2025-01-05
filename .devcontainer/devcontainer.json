@@ -10,8 +10,8 @@
     },
     "onCreateCommand": {
         // Install, set up and allow direnv in workspace.
-        "install-flakes": "nix profile install --accept-flake-config nixpkgs#devenv nixpkgs#direnv",
-        "setup-direnv": "echo 'eval \"$(direnv hook bash)\"' >> ~/.bashrc && echo 'eval \"$(direnv hook zsh)\"' >> ~/.zshrc && mkdir -p ~/.config/fish && echo 'direnv hook fish | source' >> ~/.config/fish/config.fish && direnv allow"
+        "install-flakes": "nix profile install --accept-flake-config nixpkgs#devenv nixpkgs#direnv && direnv allow",
+        "setup-direnv": "echo 'eval \"$(direnv hook bash)\"' >> ~/.bashrc && echo 'eval \"$(direnv hook zsh)\"' >> ~/.zshrc && mkdir -p ~/.config/fish && echo 'direnv hook fish | source' >> ~/.config/fish/config.fish"
     },
     "customizations": {
         "vscode": {
