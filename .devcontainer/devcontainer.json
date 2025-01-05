@@ -9,11 +9,9 @@
         }
     },
     "onCreateCommand": {
-        // Set up global gitignore for direnv.
-        "init-git": "mkdir -p ~/.config/git && printf '.direnv/\\n.envrc\\n' > ~/.config/git/ignore && git config --global core.excludesfile ~/.config/git/ignore",
         // Install, set up and allow direnv in workspace.
         "install-flakes": "nix profile install --accept-flake-config nixpkgs#devenv nixpkgs#direnv",
-        "setup-direnv": "echo 'eval \"$(direnv hook bash)\"' >> ~/.bashrc && echo 'eval \"$(direnv hook zsh)\"' >> ~/.zshrc && && mkdir -p ~/.config/fish && echo 'direnv hook fish | source' >> ~/.config/fish/config.fish && direnv allow"
+        "setup-direnv": "echo 'eval \"$(direnv hook bash)\"' >> ~/.bashrc && echo 'eval \"$(direnv hook zsh)\"' >> ~/.zshrc && && mkdir -p ~/.config/fish && echo 'direnv hook fish | source' >> ~/.config/fish/config.fish"
     },
     "customizations": {
         "vscode": {
