@@ -3,7 +3,9 @@
     "vscode": {
       "extensions": [
         "mkhl.direnv",
-        "jnoortheen.nix-ide"
+        "jnoortheen.nix-ide",
+        "dart-code.flutter",
+        "rust-lang.rust-analyzer"
       ]
     }
   },

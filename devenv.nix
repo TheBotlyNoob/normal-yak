@@ -20,13 +20,15 @@
   # services.postgres.enable = true;
 
   # https://devenv.sh/scripts/
-  # scripts.hello.exec = ''
-  #   echo hello from $GREET
-  # '';
+  scripts.serve-web.exec = ''
+    flutter pub run flutter_rust_bridge build-web --dart-root "$(pwd)" --verbose
+    flutter run --web-header=Cross-Origin-Opener-Policy=same-origin --web-header=Cross-Origin-Embedder-Policy=require-corp -d web-server -v --wasm --release --web-port 8080
+  '';
 
   enterShell = ''
-    cargo binstall flutter_rust_bridge_codegen wasm-pack -y
+    cargo binstall flutter_rust_bridge_codegen wasm-pack cargo-expand -y
     export PATH="$PATH:$HOME/.cargo/bin"
+    export CHROME_EXECUTABLE="$(pwd)/scripts/chromium-wrapper.sh"
   '';
 
   # https://devenv.sh/tasks/
