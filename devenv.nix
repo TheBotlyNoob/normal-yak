@@ -5,7 +5,7 @@
   # env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = with pkgs; [ git flutter ];
+  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium ];
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
@@ -24,10 +24,9 @@
   #   echo hello from $GREET
   # '';
 
-  # enterShell = ''
-  #   hello
-  #   git --version
-  # '';
+  enterShell = ''
+    cargo binstall flutter_rust_bridge_codegen -y
+  '';
 
   # https://devenv.sh/tasks/
   # tasks = {

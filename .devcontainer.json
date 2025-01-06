@@ -9,5 +9,14 @@
   },
   "image": "ghcr.io/cachix/devenv:latest",
   "overrideCommand": false,
-  "updateContentCommand": "devenv test"
+  "updateContentCommand": "devenv test",
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "version": "latest",
+      "noVncVersion": "1.2.0",
+      "password": "vscode",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  }
 }
