@@ -5,13 +5,13 @@
   # env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium ];
+  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium rustup ];
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
 
   languages.dart.enable = true;
-  languages.rust.enable = true;
+  # languages.rust.enable = true;
 
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";
@@ -25,7 +25,8 @@
   # '';
 
   enterShell = ''
-    cargo binstall flutter_rust_bridge_codegen -y
+    cargo binstall flutter_rust_bridge_codegen wasm-pack -y
+    export PATH="$PATH:$HOME/.cargo/bin"
   '';
 
   # https://devenv.sh/tasks/

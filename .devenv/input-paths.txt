@@ -1,0 +1,3 @@
+/workspaces/normal-chat/devenv.lock
+/workspaces/normal-chat/devenv.nix
+/workspaces/normal-chat/devenv.yaml
