@@ -3,12 +3,12 @@
     let
       version = "1.3.1";
 system = "x86_64-linux";
-devenv_root = "/workspaces/normal-chat";
+devenv_root = "/home/jj/github/normal-yak";
 devenv_dotfile = ./.devenv;
 devenv_dotfile_string = ".devenv";
 container_name = null;
-devenv_tmpdir = "/tmp";
-devenv_runtime = "/tmp/devenv-3139b41";
+devenv_tmpdir = "/run/user/1000";
+devenv_runtime = "/run/user/1000/devenv-505f9dc";
 devenv_istesting = false;
 
         in {
@@ -24,12 +24,12 @@ devenv_istesting = false;
         let
           version = "1.3.1";
 system = "x86_64-linux";
-devenv_root = "/workspaces/normal-chat";
+devenv_root = "/home/jj/github/normal-yak";
 devenv_dotfile = ./.devenv;
 devenv_dotfile_string = ".devenv";
 container_name = null;
-devenv_tmpdir = "/tmp";
-devenv_runtime = "/tmp/devenv-3139b41";
+devenv_tmpdir = "/run/user/1000";
+devenv_runtime = "/run/user/1000/devenv-505f9dc";
 devenv_istesting = false;
 
             devenv =
