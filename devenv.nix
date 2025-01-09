@@ -5,7 +5,7 @@
   # env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium rustup ];
+  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium rustup openssl.dev openssl ];
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;

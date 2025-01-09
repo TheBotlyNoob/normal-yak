@@ -1,4 +1,4 @@
-# normal_chat
+# normal_yak
 
 A new Flutter project.
 

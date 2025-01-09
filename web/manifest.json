@@ -1,6 +1,6 @@
 {
-    "name": "normal_chat",
-    "short_name": "normal_chat",
+    "name": "normal_yak",
+    "short_name": "normal_yak",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

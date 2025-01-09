@@ -4,7 +4,11 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import 'matrix.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String greet({required String name}) =>
-    RustLib.instance.api.crateApiSimpleGreet(name: name);
+RustUrl? parseRustUrl({required String url}) =>
+    RustLib.instance.api.crateApiUtilParseRustUrl(url: url);
+
+bool isRustUrlHttps({required RustUrl url}) =>
+    RustLib.instance.api.crateApiUtilIsRustUrlHttps(url: url);
