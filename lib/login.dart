@@ -16,7 +16,7 @@ import 'package:normal_yak/main.dart';
 class MatrixSetupFormRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const App(child: MatrixSetupForm();
+    return const App(child: MatrixSetupForm());
   }
 }
 
