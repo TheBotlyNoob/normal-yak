@@ -24,7 +24,7 @@ jobs:
                   flutter-version-file: pubspec.yaml # path to pubspec.yaml
 
             - run: flutter pub get
-            - run: flutter build web --release --wasm
+            - run: flutter build web --release --wasm --base-href "/normal-yak/"
 
             - name: Upload static files as artifact
               id: deployment
