@@ -33,9 +33,6 @@ class MyApp extends StatelessWidget {
 
     return ShadApp.materialRouter(
       routerConfig: router,
-      builder: (context, child) => Overlay(initialEntries: [
-        OverlayEntry(builder: (context) => App(child: child))
-      ]),
     );
   }
 }
