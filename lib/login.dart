@@ -16,7 +16,7 @@ import 'package:normal_yak/main.dart';
 class MatrixSetupFormRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const MatrixSetupForm();
+    return const App(child: MatrixSetupForm();
   }
 }
 
@@ -136,9 +136,9 @@ class LoginPageRoute extends GoRouteData {
       return invalidHomeserver(context);
     }
 
-    return FutureLoader<MatrixClient>(
+    return App(child: FutureLoader<MatrixClient>(
         future: () => MatrixClient.newInstance(homeserver: url),
-        builder: (context, client) => LoginPage(client: client));
+        builder: (context, client) => LoginPage(client: client)));
   }
 }
 
@@ -165,11 +165,10 @@ class LoginPageState extends State<LoginPage> {
             child: Column(
                 children: [
               types.hasPassword()
-                  ? Expanded(
-                      child: UsernamePasswordLogin(client: widget.client))
+                  ? UsernamePasswordLogin(client: widget.client)
                   : null,
               types.hasSso()
-                  ? Expanded(child: SsoLogin(client: widget.client))
+                  ? SsoLogin(client: widget.client)
                   : null,
             ].whereType<Widget>().toList()),
           );
