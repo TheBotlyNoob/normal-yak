@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 ## A chromium wrapper to disable sandboxing and disable
 ## some CORS options

@@ -27,8 +27,11 @@
 
   enterShell = ''
     cargo binstall flutter_rust_bridge_codegen wasm-pack cargo-expand -y
+
     export PATH="$PATH:$HOME/.cargo/bin"
     export CHROME_EXECUTABLE="$(pwd)/scripts/chromium-wrapper.sh"
+
+    export LD_LIBRARY_PATH="$(pwd)/build/linux/x64/debug/bundle/lib:$(pwd)/build/linux/x64/release/bundle/lib:$LD_LIBRARY_PATH" 
   '';
 
   # https://devenv.sh/tasks/

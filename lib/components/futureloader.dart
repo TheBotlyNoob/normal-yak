@@ -1,39 +1,62 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class FutureLoader<T> extends StatelessWidget {
-  final Future<T> future;
+import 'package:shadcn_ui/shadcn_ui.dart';
+
+class FutureLoader<T> extends StatefulWidget {
+  final Future<T> Function() future;
   final Function(BuildContext, T) builder;
 
   const FutureLoader({super.key, required this.future, required this.builder});
 
   @override
+  State<FutureLoader<T>> createState() => FutureLoaderState<T>();
+}
+
+class FutureLoaderState<T> extends State<FutureLoader<T>> {
+  late final Future<T> future = widget.future();
+  bool hasError = false;
+
+  Widget dialogBuilder(error, context) => ShadDialog.alert(
+        title: const Text('Error'),
+        description: Text(error.toString()),
+        actions: [
+          ShadButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      );
+  @override
   Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
+
     return FutureBuilder(
-      future: future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return builder(context, snapshot.data as T);
-        } else if (snapshot.hasError) {
-          showDialog(
+      future: future.catchError((error) async {
+        if (mounted && !hasError) {
+          hasError = true;
+          await showShadDialog(
               context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Error'),
-                  content: Text(snapshot.error.toString()),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                );
-              });
+              builder: (context) => dialogBuilder(error, context));
+        }
+
+        return error;
+      }),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done && !hasError) {
+          return widget.builder(context, snapshot.data as T);
+        } else if (snapshot.hasError && !hasError) {
+          hasError = true;
+          showShadDialog(
+              context: context,
+              builder: (context) => dialogBuilder(snapshot.error, context));
           return const SizedBox.shrink();
         } else {
-          return const Center(
-            child: SpinKitSpinningLines(color: Colors.blue),
+          return Center(
+            child: SpinKitSpinningLines(
+                color: theme.primaryAlertTheme.iconColor ??
+                    theme.textTheme.h1.color ??
+                    const ShadSlateColorScheme.dark().primary),
           );
         }
       },

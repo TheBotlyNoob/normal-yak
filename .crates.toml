@@ -1,0 +1,4 @@
+[v1]
+"cargo-expand 1.0.100 (registry+https://github.com/rust-lang/crates.io-index)" = ["cargo-expand"]
+"flutter_rust_bridge_codegen 2.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = ["flutter_rust_bridge_codegen"]
+"wasm-pack 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)" = ["wasm-pack"]

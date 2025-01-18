@@ -46,3 +46,6 @@ app.*.map.json
 .direnv/
 .devenv/
 .devenv.flake.nix
+
+bin/
+binstall/

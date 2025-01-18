@@ -1,0 +1,55 @@
+on:
+    push:
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    # Build job
+    build:
+        # <Not provided for brevity>
+        # At a minimum this job should upload artifacts using actions/upload-pages-artifact
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Clone repository
+              uses: actions/checkout@v4
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Set up Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  channel: stable
+                  flutter-version-file: pubspec.yaml # path to pubspec.yaml
+
+            - run: flutter pub get
+            - run: flutter build web --release --wasm
+
+            - name: Upload static files as artifact
+              id: deployment
+              uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+              with:
+                  path: build/web
+
+    # Deploy job
+    deploy:
+        # Add a dependency to the build job
+        needs: build
+
+        # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+        permissions:
+            pages: write # to deploy to Pages
+            id-token: write # to verify the deployment originates from an appropriate source
+
+        # Deploy to the github-pages environment
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        # Specify runner + deployment step
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
