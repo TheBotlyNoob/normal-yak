@@ -69,6 +69,8 @@ impl MatrixClient {
         Ok(Self { client })
     }
 
+    pub async fn get_session() -> Result<Option<Self>, Error> {}
+
     pub async fn login_types(&self) -> Result<LoginTypes, Error> {
         let login_types = self.client.matrix_auth().get_login_types().await?.flows;
 

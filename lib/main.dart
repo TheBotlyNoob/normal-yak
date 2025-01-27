@@ -7,19 +7,17 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 
 import 'package:normal_yak/src/rust/api/matrix.dart';
-import 'package:normal_yak/src/rust/api/util.dart';
 import 'package:normal_yak/src/rust/frb_generated.dart';
 
 import 'package:normal_yak/components/futureloader.dart';
 import 'package:normal_yak/login.dart';
 
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 part 'main.g.dart';
 
 void main() async {
-  usePathUrlStrategy();
+  setUrlStrategy(const HashUrlStrategy());
 
   runApp(const MyApp());
 }
@@ -77,10 +75,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Normal Yak')),
-        body: FutureLoader(
-          future: () => RustLib.init(),
-          builder: (context, _) => child ?? const Text("404"),
-        ));
+        body: RustLib.instance.initialized
+            ? child ?? const Text("404")
+            : FutureLoader(
+                future: () => RustLib.init(),
+                builder: (context, _) => child ?? const Text("404"),
+              ));
   }
 }
 
