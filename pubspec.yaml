@@ -40,7 +40,7 @@ dependencies:
     cupertino_icons: ^1.0.8
     rust_lib_normal_yak:
         path: rust_builder
-    flutter_rust_bridge: ^2.7.0
+    flutter_rust_bridge: 2.8.0
     flutter_spinkit: ^5.2.1
     provider: ^6.1.2
     shadcn_ui: ^0.16.3

@@ -5,7 +5,7 @@
   # env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium rustup openssl.dev openssl ];
+  packages = with pkgs; [ git flutter cargo-binstall ungoogled-chromium rustup openssl.dev openssl zlib ];
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
@@ -31,7 +31,7 @@
     export PATH="$PATH:$HOME/.cargo/bin"
     export CHROME_EXECUTABLE="$(pwd)/scripts/chromium-wrapper.sh"
 
-    export LD_LIBRARY_PATH="$(pwd)/build/linux/x64/debug/bundle/lib:$(pwd)/build/linux/x64/release/bundle/lib:$LD_LIBRARY_PATH" 
+    export LD_LIBRARY_PATH="${pkgs.zlib.outPath}/lib:$LD_LIBRARY_PATH" 
   '';
 
   # https://devenv.sh/tasks/

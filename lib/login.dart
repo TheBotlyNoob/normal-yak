@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:normal_yak/src/rust/api/util.dart';
 import 'package:provider/provider.dart';
@@ -131,14 +130,15 @@ class LoginPageRoute extends GoRouteData {
       modified = "https://$modified";
     }
 
-    final url = parseRustUrl(url: modified!);
+    final url = parseRustUrl(url: modified);
     if (url == null || !isRustUrlHttps(url: url)) {
       return invalidHomeserver(context);
     }
 
-    return App(child: FutureLoader<MatrixClient>(
-        future: () => MatrixClient.newInstance(homeserver: url),
-        builder: (context, client) => LoginPage(client: client)));
+    return App(
+        child: FutureLoader<MatrixClient>(
+            future: () => MatrixClient.newInstance(homeserver: url),
+            builder: (context, client) => LoginPage(client: client)));
   }
 }
 
@@ -167,9 +167,7 @@ class LoginPageState extends State<LoginPage> {
               types.hasPassword()
                   ? UsernamePasswordLogin(client: widget.client)
                   : null,
-              types.hasSso()
-                  ? SsoLogin(client: widget.client)
-                  : null,
+              types.hasSso() ? SsoLogin(client: widget.client) : null,
             ].whereType<Widget>().toList()),
           );
         });

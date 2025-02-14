@@ -1,10 +1,15 @@
 use bitflags::bitflags;
 use flutter_rust_bridge::frb;
+use gluesql::prelude::Glue;
+use gluesql_encryption::EncryptedStore;
 pub use matrix_sdk::Client;
 use matrix_sdk::{reqwest, ruma};
 pub use reqwest::Url as RustUrl;
+use ring::aead::{UnboundKey, AES_256_GCM};
 pub use ruma::api::client::session::get_login_types::v3::LoginType as RumaLoginType;
 use thiserror::Error;
+
+use crate::core::storage;
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -12,14 +17,14 @@ pub enum Error {
     ClientBuildError(#[from] matrix_sdk::ClientBuildError),
     #[error("matrix http error")]
     HttpError(#[from] matrix_sdk::HttpError),
+    #[error("invalid pin size")]
+    InvalidPinSize,
 }
 
-#[derive(Clone)]
 pub struct MatrixClient {
     client: Client,
+    db: Glue<storage::Storage>,
 }
-unsafe impl Send for MatrixClient {}
-unsafe impl Sync for MatrixClient {}
 
 #[derive(Debug, Clone, Copy)]
 pub struct InnerLoginTypes(pub u8);
@@ -66,10 +71,25 @@ pub struct LoginTypes {
 impl MatrixClient {
     pub async fn new(homeserver: RustUrl) -> Result<Self, Error> {
         let client = Client::new(homeserver).await?;
-        Ok(Self { client })
+        Ok(Self {
+            client,
+            db: Glue::new(storage::get_or_create()),
+        })
     }
 
-    pub async fn get_session() -> Result<Option<Self>, Error> {}
+    fn get_storage(
+        pin: [u8; 32],
+    ) -> Result<Glue<EncryptedStore<storage::Storage, storage::RandNonce>>, Error> {
+        Ok(Glue::new(EncryptedStore::new(
+            storage::get_or_create(),
+            UnboundKey::new(&ring::aead::AES_256_GCM, &pin).map_err(|_| Error::InvalidPinSize)?,
+            storage::RandNonce::new(),
+        )))
+    }
+
+    pub async fn retrieve_session(pin: [u8; 32]) -> Result<Self, Error> {
+        Self::get_storage(pin);
+    }
 
     pub async fn login_types(&self) -> Result<LoginTypes, Error> {
         let login_types = self.client.matrix_auth().get_login_types().await?.flows;
