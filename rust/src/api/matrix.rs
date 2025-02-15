@@ -1,9 +1,11 @@
+use core::error;
+
 use bitflags::bitflags;
 use flutter_rust_bridge::frb;
-use gluesql::prelude::Glue;
+use gluesql::prelude::{Glue, Payload, Value};
 use gluesql_encryption::EncryptedStore;
 pub use matrix_sdk::Client;
-use matrix_sdk::{reqwest, ruma};
+use matrix_sdk::{authentication::matrix::MatrixAuth, reqwest, ruma, AuthSession};
 pub use reqwest::Url as RustUrl;
 use ring::aead::{UnboundKey, AES_256_GCM};
 pub use ruma::api::client::session::get_login_types::v3::LoginType as RumaLoginType;
@@ -15,15 +17,27 @@ use crate::core::storage;
 pub enum Error {
     #[error("error creating matrix client")]
     ClientBuildError(#[from] matrix_sdk::ClientBuildError),
+    #[error("matrix error: {0}")]
+    MatrixError(#[from] matrix_sdk::Error),
     #[error("matrix http error")]
     HttpError(#[from] matrix_sdk::HttpError),
     #[error("invalid pin size")]
     InvalidPinSize,
+    #[error("encryption error: {0}")]
+    EncryptionError(#[from] gluesql_encryption::Error),
+    #[error("storage error: {0}")]
+    StorageError(#[from] gluesql::core::error::Error),
+    #[error("no session found")]
+    NoSession,
+    #[error("url parse error")]
+    UrlParseError(#[from] url::ParseError),
+    #[error("serde_transmute error: {0}")]
+    SerdeError(#[from] serde_transmute::TransmuteError),
 }
 
 pub struct MatrixClient {
     client: Client,
-    db: Glue<storage::Storage>,
+    db: Glue<EncryptedStore<storage::Storage, storage::RandNonce>>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -69,26 +83,50 @@ pub struct LoginTypes {
 }
 
 impl MatrixClient {
-    pub async fn new(homeserver: RustUrl) -> Result<Self, Error> {
+    pub async fn new(homeserver: RustUrl, pin: &[u8]) -> Result<Self, Error> {
         let client = Client::new(homeserver).await?;
+
         Ok(Self {
             client,
-            db: Glue::new(storage::get_or_create()),
+            db: storage::get(pin).await?,
         })
     }
 
-    fn get_storage(
-        pin: [u8; 32],
-    ) -> Result<Glue<EncryptedStore<storage::Storage, storage::RandNonce>>, Error> {
-        Ok(Glue::new(EncryptedStore::new(
-            storage::get_or_create(),
-            UnboundKey::new(&ring::aead::AES_256_GCM, &pin).map_err(|_| Error::InvalidPinSize)?,
-            storage::RandNonce::new(),
-        )))
-    }
+    pub async fn get_session(pin: [u8; 32]) -> Result<Self, Error> {
+        use gluesql::core::ast_builder::*;
 
-    pub async fn retrieve_session(pin: [u8; 32]) -> Result<Self, Error> {
-        Self::get_storage(pin);
+        let mut db = storage::get(pin).await?;
+
+        let payload = table("matrix").select().limit(1).execute(&mut db).await?;
+
+        let Payload::Select { mut rows, labels } = payload else {
+            todo!()
+        };
+
+        if let Some(row) = rows.pop() {
+            let mut row = row.into_iter();
+
+            let Value::Str(homeserver) = row.next().unwrap() else {
+                todo!()
+            };
+
+            let Value::Map(session) = row.next().unwrap() else {
+                todo!()
+            };
+
+            let session = AuthSession::Matrix(serde_transmute::transmute(
+                session,
+                &serde_transmute::Settings::default(),
+            )?);
+
+            let client = Client::new(RustUrl::parse(&homeserver)?).await?;
+
+            client.restore_session(session).await?;
+
+            Ok(Self { client, db })
+        } else {
+            Err(Error::NoSession)
+        }
     }
 
     pub async fn login_types(&self) -> Result<LoginTypes, Error> {

@@ -5,19 +5,24 @@
 
 import '../frb_generated.dart';
 import '../lib.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Error`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `bits`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`, `from_bits_retain`, `from`, `from`, `source`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `bits`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`, `from_bits_retain`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `source`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<MatrixClient>>
 abstract class MatrixClient implements RustOpaqueInterface {
+  static Future<MatrixClient> getSession({required U8Array32 pin}) =>
+      RustLib.instance.api.crateApiMatrixMatrixClientGetSession(pin: pin);
+
   Future<LoginTypes> loginTypes();
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<MatrixClient> newInstance({required RustUrl homeserver}) =>
+  static Future<MatrixClient> newInstance(
+          {required RustUrl homeserver, required U8Array32 pin}) =>
       RustLib.instance.api
-          .crateApiMatrixMatrixClientNew(homeserver: homeserver);
+          .crateApiMatrixMatrixClientNew(homeserver: homeserver, pin: pin);
 }
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RustUrl>>
@@ -83,4 +88,18 @@ class LoginTypes {
           runtimeType == other.runtimeType &&
           real == other.real &&
           inner == other.inner;
+}
+
+class U8Array32 extends NonGrowableListView<int> {
+  static const arraySize = 32;
+
+  @internal
+  Uint8List get inner => _inner;
+  final Uint8List _inner;
+
+  U8Array32(this._inner)
+      : assert(_inner.length == arraySize),
+        super(_inner);
+
+  U8Array32.init() : this(Uint8List(arraySize));
 }

@@ -1466,7 +1466,7 @@ dependencies = [
 [[package]]
 name = "gluesql-encryption"
 version = "0.1.0"
-source = "git+https://github.com/thebotlynoob/gluesql-encryption#d99a50e84fb5c9f900b27c72fb45fc3dc6bae832"
+source = "git+https://github.com/thebotlynoob/gluesql-encryption#fb358b9cea8b28feb7f0c115611628484d33725c"
 dependencies = [
  "async-trait",
  "futures",
@@ -2673,6 +2673,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d05e27ee213611ffe7d6348b942e8f942b37114c00cc03cec254295a4a17852e"
 
 [[package]]
+name = "openssl-src"
+version = "300.4.2+3.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "168ce4e058f975fe43e89d9ccf78ca668601887ae736090aacc23ae353c298e2"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "openssl-sys"
 version = "0.9.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2680,6 +2689,7 @@ checksum = "8b22d5b84be05a8d6947c7cb71f7c849aa0f112acd4bf51c2a7c1c988ac0a9dc"
 dependencies = [
  "cc",
  "libc",
+ "openssl-src",
  "pkg-config",
  "vcpkg",
 ]
@@ -3425,10 +3435,14 @@ dependencies = [
  "gluesql_memory_storage",
  "gluesql_sled_storage",
  "matrix-sdk",
+ "openssl-sys",
  "rand 0.9.0",
  "rand_chacha 0.9.0",
  "ring",
+ "serde_json",
+ "serde_transmute",
  "thiserror 2.0.11",
+ "url",
 ]
 
 [[package]]
@@ -3644,6 +3658,15 @@ name = "serde_spanned"
 version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87607cb1398ed59d48732e575a4c28a7a8ebf2454b964fe3f224f2afc07909e1"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "serde_transmute"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f86202e091187d59fbdf6172b74957fc154bb5b3f38b85521bfcb120a0e601b"
 dependencies = [
  "serde",
 ]

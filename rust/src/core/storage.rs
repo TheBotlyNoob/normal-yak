@@ -1,6 +1,11 @@
+use gluesql::{
+    core::{ast::ColumnDef, data::Schema},
+    prelude::Glue,
+};
+use gluesql_encryption::EncryptedStore;
 use rand::{RngCore, SeedableRng};
 use rand_chacha::ChaCha20Rng;
-use ring::aead::NonceSequence;
+use ring::aead::{NonceSequence, UnboundKey};
 
 pub struct RandNonce(ChaCha20Rng);
 impl RandNonce {
@@ -47,4 +52,27 @@ mod specific {
     }
 }
 
-pub use specific::{get_or_create, Storage};
+pub use specific::Storage;
+
+pub async fn get(
+    pin: [u8; 32],
+) -> Result<Glue<EncryptedStore<Storage, RandNonce>>, crate::api::matrix::Error> {
+    use gluesql::core::ast_builder::*;
+    let mut db = Glue::new(
+        EncryptedStore::new(
+            specific::get_or_create(),
+            UnboundKey::new(&ring::aead::AES_256_GCM, &pin).unwrap(),
+            RandNonce::default(),
+        )
+        .await?,
+    );
+
+    table("matrix")
+        .create_table_if_not_exists()
+        .add_column("homeserver TEXT")
+        .add_column("session MAP")
+        .execute(&mut db)
+        .await?;
+
+    Ok(db)
+}

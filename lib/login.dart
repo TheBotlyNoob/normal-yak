@@ -137,7 +137,7 @@ class LoginPageRoute extends GoRouteData {
 
     return App(
         child: FutureLoader<MatrixClient>(
-            future: () => MatrixClient.newInstance(homeserver: url),
+            future: () => MatrixClient.newInstance(homeserver: url, pin: [123]),
             builder: (context, client) => LoginPage(client: client)));
   }
 }
